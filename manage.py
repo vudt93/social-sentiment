@@ -1,12 +1,16 @@
 from social_sentiment import app, db
 from flask_script import Manager, prompt_bool
 
+from social_sentiment.models import User
+
 manager = Manager(app)
 
 
 @manager.command
 def initdb():
     db.create_all()
+    db.session.add(User(username='admin', password='123456', email='vudt93@gmail.com'))
+    db.session.commit()
     print("Initialized the db")
 
 

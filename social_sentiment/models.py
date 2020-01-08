@@ -33,6 +33,7 @@ class Post(db.Model):
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False, unique=True)
+    password = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(200), unique=True)
     posts = db.relationship('Post', backref='user', lazy='dynamic')
     created_date = db.Column(db.DateTime, default=datetime.utcnow)
@@ -53,3 +54,12 @@ class User(db.Model):
 
     def __repr__(self):
         return "<User '{}', '{}'>".format(self.username, self.email)
+
+    @staticmethod
+    def username_password_match(_username, _password):
+        return User.query.filter_by(username=_username, password=_password).first() is not None
+
+    @staticmethod
+    def get_all_user():
+        return User.query.all()
+
