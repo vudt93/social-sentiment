@@ -11,6 +11,7 @@ class Post(db.Model):
     content = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
+    sentiment_score = db.Column(db.Float, default=0)
 
     @staticmethod
     def newest(num):
@@ -23,6 +24,7 @@ class Post(db.Model):
             'title': self.title,
             'content': self.content,
             'author': self.user.username,
+            'sentiment_score': 'negative' if self.sentiment_score < 0 else 'positive' if self.sentiment_score > 0 else 'neutral',
             'date': self.date.strftime("%Y-%m-%d %H:%M:%S"),
         }
 
