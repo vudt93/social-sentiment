@@ -1,12 +1,12 @@
 import flask
 from flask import request
+from flask_jwt_extended import jwt_required
 
 from social_sentiment import app, models, db
-from social_sentiment.views.LoginView import token_required
 
 
-@app.route('/user/<username>', methods=["GET", "POST"])
-@token_required
+@app.route('/api/user/<username>', methods=["GET", "POST"])
+@jwt_required
 def user(username):
     user = models.User.query.filter_by(username=username).first()
     if request.method == 'POST':
@@ -17,8 +17,8 @@ def user(username):
     return flask.json.dumps(user.serialize)
 
 
-@app.route('/user', methods=["GET", "POST"])
-@token_required
+@app.route('/api/user', methods=["GET", "POST"])
+@jwt_required
 def create_user():
     if request.method == 'POST':
         body = request.get_json()
