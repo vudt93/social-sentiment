@@ -13,13 +13,13 @@ export const CREATE_POST_FAILURE = '@@post/CREATE_POST_FAILURE';
 export const UPDATE_POST_REQUEST = '@@post/UPDATE_POST_REQUEST';
 export const UPDATE_POST_SUCCESS = '@@post/UPDATE_POST_SUCCESS';
 export const UPDATE_POST_FAILURE = '@@post/UPDATE_POST_FAILURE';
-export const CLOSE_POST_REQUEST = '@@post/CLOSE_POST_REQUEST';
-export const CLOSE_POST_SUCCESS = '@@post/CLOSE_POST_SUCCESS';
-export const CLOSE_POST_FAILURE = '@@post/CLOSE_POST_FAILURE';
+export const DELETE_POST_REQUEST = '@@post/DELETE_POST_REQUEST';
+export const DELETE_POST_SUCCESS = '@@post/DELETE_POST_SUCCESS';
+export const DELETE_POST_FAILURE = '@@post/DELETE_POST_FAILURE';
 
 export const getPostList = () => ({
   [RSAA]: {
-      endpoint: config.preUrl + '/api/post/',
+      endpoint: config.preUrl + '/api/post',
       method: 'GET',
       headers: withAuth({ 'Content-Type': 'application/json' }),
       types: [
@@ -28,9 +28,9 @@ export const getPostList = () => ({
   }
 });
 
-export const getPost = (ticket) => ({
+export const getPost = (id) => ({
   [RSAA]: {
-      endpoint: config.preUrl + '/api/postDetail/' + ticket + '/',
+      endpoint: config.preUrl + '/api/post/' + id + '/',
       method: 'GET',
       body: JSON.stringify({}),
       headers: withAuth({ 'Content-Type': 'application/json' }),
@@ -42,9 +42,9 @@ export const getPost = (ticket) => ({
 
 export const createPost = (param) => ({
   [RSAA]: {
-      endpoint: config.preUrl + '/api/post/',
+      endpoint: config.preUrl + '/api/post',
       method: 'POST',
-      body: JSON.stringify({param: param}),
+      body: JSON.stringify(param),
       headers: withAuth({ 'Content-Type': 'application/json' }),
       types: [
         CREATE_POST_REQUEST, CREATE_POST_SUCCESS, CREATE_POST_FAILURE
@@ -52,11 +52,11 @@ export const createPost = (param) => ({
   }
 });
 
-export const updatePost = (ticket, param) => ({
+export const updatePost = (id, param) => ({
   [RSAA]: {
-      endpoint: config.preUrl + '/api/postDetail/' + ticket + '/',
+      endpoint: config.preUrl + '/api/post/' + id + '/',
       method: 'PUT',
-      body: JSON.stringify({param: param}),
+      body: JSON.stringify(param),
       headers: withAuth({ 'Content-Type': 'application/json' }),
       types: [
         UPDATE_POST_REQUEST, UPDATE_POST_SUCCESS, UPDATE_POST_FAILURE
@@ -64,14 +64,13 @@ export const updatePost = (ticket, param) => ({
   }
 });
 
-export const closePost = (ticket, param) => ({
+export const deletePost = (id) => ({
   [RSAA]: {
-      endpoint: config.preUrl + '/api/postDetail/' + ticket + '/',
+      endpoint: config.preUrl + '/api/post/' + id + '/',
       method: 'DELETE',
-      body: JSON.stringify({param: param}),
       headers: withAuth({ 'Content-Type': 'application/json' }),
       types: [
-        CLOSE_POST_REQUEST, CLOSE_POST_SUCCESS, CLOSE_POST_FAILURE
+        DELETE_POST_REQUEST, DELETE_POST_SUCCESS, DELETE_POST_FAILURE
       ]
   }
 });

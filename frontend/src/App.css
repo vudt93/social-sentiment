@@ -468,7 +468,7 @@ input[type="text"] {
 .btn-area {
 	text-align: left;
 }
-.create-order-btn {
+.create-post-btn {
 	margin-left: 10px;
 }
 .wrapper .row {
@@ -486,7 +486,7 @@ input[type="text"] {
     background-color: #1c222d;
 	margin-left: 20px;
 }
-.order-form {
+.post-form {
 	margin-left: 20px;
 }
 .react-confirm-alert-body{

@@ -3,10 +3,12 @@ import {routerReducer} from 'react-router-redux'
 import auth, * as fromAuth from './auth.js'
 import env from "./env";
 import post from "./post";
+import user from "./user";
 
 export default combineReducers({
   auth: auth,
   post: post,
+  user: user,
   env: env,
   router: routerReducer
 })

@@ -1,48 +1,48 @@
-import * as POST_STATUS from '../actions/post'
+import * as USER_STATUS from '../actions/user'
 import * as env from "../actions/env";
 
 const initialState = {
-  post_list: null,
+  user_list: null,
   type: null,
   message: null,
 };
 export default (state=initialState, action) => {
   switch(action.type) {
-      case POST_STATUS.GET_POST_LIST_SUCCESS:
+      case USER_STATUS.GET_USER_LIST_SUCCESS:
           return {
               ...state,
-              post_list: action.payload,
+              user_list: action.payload,
               type: "SUCCESS",
               message: "LOAD SUCCESS"
           }
           break
-      case POST_STATUS.GET_POST_SUCCESS:
-      case POST_STATUS.CREATE_POST_SUCCESS:
+      case USER_STATUS.GET_USER_SUCCESS:
+      case USER_STATUS.CREATE_USER_SUCCESS:
           return {
               ...state,
               type: "CHANGE_SUCCESS",
               message: 'CREATE_SUCCESS'
           }
           break
-      case POST_STATUS.UPDATE_POST_SUCCESS:
+      case USER_STATUS.UPDATE_USER_SUCCESS:
           return {
               ...state,
               type: "CHANGE_SUCCESS",
               message: 'UPDATE_SUCCESS'
           }
           break
-      case POST_STATUS.DELETE_POST_SUCCESS:
+      case USER_STATUS.DELETE_USER_SUCCESS:
           return {
               ...state,
               type: "CHANGE_SUCCESS",
               message: 'DELETE_SUCCESS'
           }
           break
-      case POST_STATUS.CREATE_POST_FAILURE:
-      case POST_STATUS.UPDATE_POST_FAILURE:
-      case POST_STATUS.DELETE_POST_FAILURE:
-      case POST_STATUS.GET_POST_FAILURE:
-      case POST_STATUS.GET_POST_LIST_FAILURE:
+      case USER_STATUS.CREATE_USER_FAILURE:
+      case USER_STATUS.UPDATE_USER_FAILURE:
+      case USER_STATUS.DELETE_USER_FAILURE:
+      case USER_STATUS.GET_USER_FAILURE:
+      case USER_STATUS.GET_USER_LIST_FAILURE:
           let message = action.message
           if (!message) {
               message = action.payload.message

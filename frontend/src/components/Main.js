@@ -21,7 +21,8 @@ export default class Main extends Component {
                 <Router>
                     <div className={`row main ${this.state.showLeftMenu ? '' : 'hide-menu'}`}>
                         <LeftSideBar toggleMenu = {this.toggleMenu} showLeftMenu = {this.state.showLeftMenu}/>
-                        <div className="wrapper">i
+                        <div className="wrapper">
+
                             <Switch>
                                 <Route path="/Post" component={Post} />
                                 <Route path="/User" component={User} />

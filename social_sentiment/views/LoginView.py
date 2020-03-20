@@ -18,7 +18,6 @@ app.config['JWT_SECRET_KEY'] = 'ABCD'
 jwt = JWTManager(app)
 
 
-
 def token_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
