@@ -2,10 +2,15 @@ import React, {Component} from 'react'
 import {connect} from "react-redux";
 import {confirmAlert} from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
-import {closeUser, createUser, getUser, getUserList, updateUser} from "../actions/user";
+import {createUser, deleteUser, getUser, getUserList, updateUser} from "../actions/user";
+import UserForm from "./UserForm";
+import {createNotification} from "../helper";
+import 'react-notifications/lib/notifications.css';
+import {NotificationContainer} from "react-notifications";
 
 class User extends Component {
     fetching = false;
+    is_get_user = false;
     firstLoading = true;
     interval = null;
     constructor(props) {
@@ -15,16 +20,16 @@ class User extends Component {
             isShowUserForm: false,
             env: props.env,
         }
-        /*
+        this.getUserList= this.getUserList.bind(this);
+
         this.setCreateForm= this.setCreateForm.bind(this);
         this.setUpdateForm= this.setUpdateForm.bind(this);
         this.createUser= this.createUser.bind(this);
         this.updateUser= this.updateUser.bind(this);
-        this.closeUser= this.closeUser.bind(this);
-        this.reloadTable= this.reloadTable.bind(this);
+        this.deleteUser= this.deleteUser.bind(this);
+        this.reloadUser= this.reloadUser.bind(this);
         this.hideUserForm= this.hideUserForm.bind(this);
-        this.hideClosePartialForm= this.hideClosePartialForm.bind(this);
-        */
+
 
     }
     componentDidMount() {
@@ -35,9 +40,8 @@ class User extends Component {
         if (this.interval != null ) clearInterval(this.interval)
     }
     componentWillReceiveProps(props) {
-        this.setState(...this.state,
-            {
-                status: props.status ? props.status : {},
+        this.setState(...this.state, {
+                user_list: props.user_list ? props.user_list : {},
                 env: props.env,
             })
         if (this.state.env !== props.env) {
@@ -45,23 +49,44 @@ class User extends Component {
             this.getUserList();
         } else {
             this.firstLoading = false;
+            if (props.type == 'CHANGE_SUCCESS') {
+                createNotification('SUCCESS', props.message)();
+                this.hideUserForm();
+                setTimeout(() => this.getUserList(), 2000)
+
+            }
+            if (this.is_get_user) {
+                createNotification(props.type, props.message)();
+                this.is_get_user = false;
+            }
         }
     }
     getUserList() {
         this.props.getUserList()
+        this.is_get_user = true;
     }
-    updateUserList(service_id, status) {
-        let param = {}
-        param[service_id] = status
-        this.props.updateUserList(param)
+    setCreateForm(param) {
+        this.setState(...this.state, {isShowUserForm: true, submitUser: this.createUser,
+                                             update_user_data: param, isUpdate: false})
     }
-    submitEnable(event) {
-        const service_id = event.target.getAttribute('service_id')
-        this.submit(this.updateUserList, service_id, true)
+    setUpdateForm(param) {
+        this.setState(...this.state, {isShowUserForm: true, submitUser: this.updateUser,
+                                             update_user_data: param, isUpdate: true})
     }
-    submitDisable(event) {
-        const service_id = event.target.getAttribute('service_id')
-        this.submit(this.updateUserList, service_id,false)
+    createUser(param) {
+        this.props.createUser(param)
+    }
+    updateUser(param) {
+        this.props.updateUser(param.id, param)
+    }
+    deleteUser(param) {
+        this.props.deleteUser(param.id)
+    }
+    reloadUser() {
+        this.getUserList();
+    }
+    hideUserForm() {
+        this.setState({isShowUserForm: false})
     }
     submit = (func, service_id, status) => {
         func(service_id, status)
@@ -89,27 +114,43 @@ class User extends Component {
                     {/*<img width = {100} height = {100} src={loading} alt="Loading..." />*/}
                 </div>
         }
+        const user_list = this.state.user_list
         let user_lst_html = []
 
-        this.user_list && this.user_list.forEach(user => {
-            user_lst_html.push(<li>
-                <h3>{user.title}</h3>
-                <p>{user.content}</p>
-                <div>{user.author}</div>
-                <div>{user.sentiment_score}</div>
-                <div>{user.date}</div>
+        user_list && user_list.forEach((user, i) => {
+            user_lst_html.push(<li key = {`${i}-user`}>
+                <h3>Username: {user.username}</h3>
+                <p>Email: {user.email}</p>
+                <div>Joined Date: {user.created_date}</div>
+                <div>
+                    <span key = {`${i}-Edit`} className={`td-lv1`}><span className={`link mediumblue-color`} onClick = {() => this.setUpdateForm(user)}>Edit</span></span>
+                    <span key = {`${i}-Delete`} className={`td-lv1`}><span className={`link dark-red-color`} onClick = {() => this.deleteUser(user)}>Delete</span></span>
+                </div>
             </li>)
 
         });
         return (
-            <div className="service-status">
+            <div className="user-list">
                 <h2 style={{textAlign: 'center'}}>User</h2>
                 <div className="overview">
                     <ul>
                         {user_lst_html}
                     </ul>
+                    <div className={'btn-area'}>
+                        <button className='create-user-btn btn btn-primary' type="button" color="primary" size="lg" onClick={this.reloadUser}>
+                            Reload
+                        </button>
+                        <button className='create-order-btn btn btn-primary' type="button" color="primary" size="lg" onClick={() => this.setCreateForm({})}>
+                            Create
+                        </button>
                     </div>
+                    <div className = "row">                        
+                        {this.state.isShowUserForm && <UserForm submitForm={this.state.submitUser} data={this.state.update_user_data}
+                                   isUpdate={this.state.isUpdate} setHide={this.hideUserForm}/>}
+                    </div>
+                </div>
                 <br />
+                <NotificationContainer/>
             </div>
         )
     }
@@ -117,12 +158,14 @@ class User extends Component {
 
 export default connect((state) => ({
         user_list: state.user.user_list,
+        type: state.user.type,
+        message: state.user.message,
         env: state.env.env,
     }), (dispatch) => ({
-        getUserList: (param) => dispatch(getUserList(param)),
+        getUserList: () => dispatch(getUserList()),
         getUser: (ticket) => dispatch(getUser(ticket)),
         createUser: (param) => dispatch(createUser(param)),
         updateUser: (ticket, param) => dispatch(updateUser(ticket, param)),
-        closeUser: (ticket, param) => dispatch(closeUser(ticket, param)),
+        deleteUser: (ticket, param) => dispatch(deleteUser(ticket, param)),
     })
 )(User);

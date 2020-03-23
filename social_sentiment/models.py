@@ -1,8 +1,7 @@
 from datetime import datetime
-
 from sqlalchemy import desc
-
 from social_sentiment import db
+from flask_bcrypt import generate_password_hash, check_password_hash
 
 
 class Post(db.Model):
@@ -62,6 +61,16 @@ class User(db.Model):
         return User.query.filter_by(username=_username, password=_password).first() is not None
 
     @staticmethod
+    def get_user(_username):
+        return User.query.filter_by(username=_username).first()
+
+    @staticmethod
     def get_all_user():
         return User.query.all()
+
+    def hash_password(self):
+        self.password = generate_password_hash(self.password).decode('utf8')
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 

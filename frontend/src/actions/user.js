@@ -1,6 +1,7 @@
 import { RSAA } from 'redux-api-middleware';
 import { withAuth } from '../reducers'
 import config from "../config";
+
 export const GET_USER_LIST_REQUEST = '@@user/GET_USER_LIST_REQUEST';
 export const GET_USER_LIST_SUCCESS = '@@user/GET_USER_LIST_SUCCESS';
 export const GET_USER_LIST_FAILURE = '@@user/GET_USER_LIST_FAILURE';
@@ -17,9 +18,10 @@ export const DELETE_USER_REQUEST = '@@user/DELETE_USER_REQUEST';
 export const DELETE_USER_SUCCESS = '@@user/DELETE_USER_SUCCESS';
 export const DELETE_USER_FAILURE = '@@user/DELETE_USER_FAILURE';
 
+
 export const getUserList = () => ({
   [RSAA]: {
-      endpoint: config.preUrl + '/api/user/',
+      endpoint: config.preUrl + '/api/user',
       method: 'GET',
       headers: withAuth({ 'Content-Type': 'application/json' }),
       types: [
@@ -28,9 +30,9 @@ export const getUserList = () => ({
   }
 });
 
-export const getUser = (ticket) => ({
+export const getUser = (id) => ({
   [RSAA]: {
-      endpoint: config.preUrl + '/api/userDetail/' + ticket + '/',
+      endpoint: config.preUrl + '/api/user/' + id + '/',
       method: 'GET',
       body: JSON.stringify({}),
       headers: withAuth({ 'Content-Type': 'application/json' }),
@@ -42,9 +44,9 @@ export const getUser = (ticket) => ({
 
 export const createUser = (param) => ({
   [RSAA]: {
-      endpoint: config.preUrl + '/api/user/',
-      method: 'USER',
-      body: JSON.stringify({param: param}),
+      endpoint: config.preUrl + '/api/user',
+      method: 'POST',
+      body: JSON.stringify(param),
       headers: withAuth({ 'Content-Type': 'application/json' }),
       types: [
         CREATE_USER_REQUEST, CREATE_USER_SUCCESS, CREATE_USER_FAILURE
@@ -52,11 +54,11 @@ export const createUser = (param) => ({
   }
 });
 
-export const updateUser = (ticket, param) => ({
+export const updateUser = (id, param) => ({
   [RSAA]: {
-      endpoint: config.preUrl + '/api/userDetail/' + ticket + '/',
+      endpoint: config.preUrl + '/api/user/' + id + '/',
       method: 'PUT',
-      body: JSON.stringify({param: param}),
+      body: JSON.stringify(param),
       headers: withAuth({ 'Content-Type': 'application/json' }),
       types: [
         UPDATE_USER_REQUEST, UPDATE_USER_SUCCESS, UPDATE_USER_FAILURE
@@ -64,11 +66,10 @@ export const updateUser = (ticket, param) => ({
   }
 });
 
-export const closeUser = (ticket, param) => ({
+export const deleteUser = (id) => ({
   [RSAA]: {
-      endpoint: config.preUrl + '/api/userDetail/' + ticket + '/',
+      endpoint: config.preUrl + '/api/user/' + id + '/',
       method: 'DELETE',
-      body: JSON.stringify({param: param}),
       headers: withAuth({ 'Content-Type': 'application/json' }),
       types: [
         DELETE_USER_REQUEST, DELETE_USER_SUCCESS, DELETE_USER_FAILURE
