@@ -1,8 +1,6 @@
 from flask import render_template
 
-from social_sentiment.views.PostView import *
-from social_sentiment.views.UserView import *
-from social_sentiment.views.LoginView import *
+from social_sentiment import app
 
 
 @app.route('/')
